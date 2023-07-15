@@ -4,6 +4,7 @@ from PyQt6.QtWidgets import QWidget, QGridLayout, QTableView, QHeaderView, QAbst
 
 class SignalTable(QWidget):
     _PLUS_ICON_PATH = "../Content/plus.png"
+
     def __init__(self):
         super().__init__()
 
@@ -17,14 +18,13 @@ class SignalTable(QWidget):
 
         self.setLayout(self.mainGridLayout)
 
-
     def setupTable(self):
-        self.tableModel.setHorizontalHeaderLabels(['ADD/REMOVE ICON', 'DESC'])
+        self.tableModel.setHorizontalHeaderLabels(['NAME', 'FUNCTION'])
 
         self.tableView.setStyleSheet("background-color: transparent; border:none;")
         self.tableView.setModel(self.tableModel)
         self.tableView.verticalHeader().setVisible(False)
-        self.tableView.horizontalHeader().setVisible(False)
+        # self.tableView.horizontalHeader().setVisible(False)
         self.tableView.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
 
         header = self.tableView.horizontalHeader()
@@ -32,8 +32,12 @@ class SignalTable(QWidget):
         header.setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)
         self.mainGridLayout.addWidget(self.tableView, 0, 0)
 
-        self.tableModel.appendRow([QStandardItem("Base"), QStandardItem("1")])
+        self.tableModel.appendRow([QStandardItem("Example 1"), QStandardItem("sin(10t)")])
 
         self.addSignalButton.setStyleSheet("border:none; text-align:center; color: green; font-size: 24pt;")
         self.addSignalButton.setText("+")
         self.mainGridLayout.addWidget(self.addSignalButton, 1, 0)
+
+    def signalAdded(self, data):
+        fnStr = str(data["alpha"]) + "*" + data["function"] + "(" + data["beta"] + "t" + "+" + data["gamma"] + ")"
+        self.tableModel.appendRow([QStandardItem(data["name"]), QStandardItem(fnStr)])
