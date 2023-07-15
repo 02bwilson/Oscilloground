@@ -54,4 +54,4 @@ class DataManager(QThread):
     def addSignal(self, data):
         self.functions[data["name"]] = [data["operator"],
                                         lambda t: eval(str(data["alpha"]) + "*" + "scipy." + data["function"] \
-                                                       + "(" + str(data["beta"]) + str(t) + "+" + data["gamma"] + ")")]
+                                                       + "(" + str(data["beta"]) + "*" + str(t) + "+" + data["gamma"] + ")")]

@@ -1,5 +1,5 @@
 from PyQt6.QtCore import Qt, pyqtSignal
-from PyQt6.QtGui import QIntValidator
+from PyQt6.QtGui import QDoubleValidator
 from PyQt6.QtWidgets import QGridLayout, QComboBox, QDialog, QLabel, QLineEdit, QPushButton
 
 
@@ -39,10 +39,10 @@ class AddSignal(QDialog):
         self.exampleLabel.setStyleSheet("text-align: center; font-size:12pt")
         self.mainGridLayout.addWidget(self.exampleLabel, 0, 0, 1, 2)
 
-        self.intValidator = QIntValidator()
-        self.alphaLineEdit.setValidator(self.intValidator)
-        self.betaLineEdit.setValidator(self.intValidator)
-        self.gammaLineEdit.setValidator(self.intValidator)
+        self.doubleValidator = QDoubleValidator()
+        self.alphaLineEdit.setValidator(self.doubleValidator)
+        self.betaLineEdit.setValidator(self.doubleValidator)
+        self.gammaLineEdit.setValidator(self.doubleValidator)
 
         self.mainGridLayout.addWidget(self.nameLabel, 1, 0)
         self.mainGridLayout.addWidget(self.nameLineEdit, 1, 1)
