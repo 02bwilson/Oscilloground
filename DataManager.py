@@ -8,7 +8,6 @@ from PyQt6.QtCore import pyqtSignal, QTimer, QThread
 
 
 class DataManager(QThread):
-
     _SAMPLE_RATE = 64
 
     newTimeData = pyqtSignal(list, list, int)
@@ -20,18 +19,15 @@ class DataManager(QThread):
         self.startTime = time.time()
 
         self.continueFlag = True
-        
-        self.functions = dict()
-        self.functions["base"] = ["*", lambda t: 1.0]
-        self.functions["sin_add_1"] = ["+", lambda t: math.sin(t) ** 2]
-        self.functions["cos_mul_1"] = ["*", lambda t: math.cos(4 * t)]
 
+        self.functions = dict()
+        self.functions["Example 1"] = ["*", lambda t: math.sin(10 * t)]
 
         self.dataList = [[], []]
         self.timeList = []
 
     def startGatherData(self):
-        while(self.continueFlag):
+        while (self.continueFlag):
             time.sleep(1.0 / self._SAMPLE_RATE)
             self.gatherData()
 
@@ -49,6 +45,13 @@ class DataManager(QThread):
         if len(self.dataList[0]) >= 2 * self._SAMPLE_RATE:
             self.dataList[1] = scipy.fft.fftshift(scipy.fft.fft(self.dataList[0]))
             self.dataList[1] = [math.log10((v.real * v.real) + (v.imag * v.imag)) for v in self.dataList[1]]
-            self.newFFTData.emit(self.dataList[1], [i for i in range(len(self.dataList[1]))], self._SAMPLE_RATE)
+            self.newFFTData.emit(self.dataList[1],
+                                 [(i - (self._SAMPLE_RATE / 2)) for i in range(len(self.dataList[1]))],
+                                 self._SAMPLE_RATE)
 
         self.newTimeData.emit(self.dataList[0], self.timeList, self._SAMPLE_RATE)
+
+    def addSignal(self, data):
+        self.functions[data["name"]] = [data["operator"],
+                                        lambda t: eval(str(data["alpha"]) + "*" + "scipy." + data["function"] \
+                                                       + "(" + str(data["beta"]) + str(t) + "+" + data["gamma"] + ")")]
