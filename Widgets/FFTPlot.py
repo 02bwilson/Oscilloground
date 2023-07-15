@@ -5,4 +5,3 @@ class FFTPlot(AbstractPlot):
 
     def __init__(self):
         super().__init__()
-
