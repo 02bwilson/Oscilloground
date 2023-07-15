@@ -26,10 +26,15 @@ class MainWidget(QWidget):
         self.addSignalMenu = AddSignal()
         self.dataManager = DataManager()
 
+        self.addSignalMenu.addSignalSignal.connect(self.dataManager.addSignal)
+        self.addSignalMenu.addSignalSignal.connect(self.signalTable.signalAdded)
+
         self.dataThread = QThread()
         self.dataManager.moveToThread(self.dataThread)
         self.dataThread.started.connect(self.dataManager.startGatherData)
         self.dataThread.start()
+
+        self.signalTable.addSignalButton.pressed.connect(self.addSignalMenu.show)
 
         self.dataManager.newTimeData.connect(self.timePlot.plot)
         self.dataManager.newFFTData.connect(self.fftPlot.plot)
