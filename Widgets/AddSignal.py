@@ -27,7 +27,7 @@ class AddSignal(QDialog):
         self.gammaLineEdit = QLineEdit()
 
         self.functionComboBox = QComboBox()
-        self.functionComboBox.addItems(["sin", "sinh", "cos", "cosh"])
+        self.functionComboBox.addItems(["sin", "cos", "square", "sawtooth"])
 
         self.operatorComboBox = QComboBox()
         self.operatorComboBox.addItems(["+", "*", "-", "/"])
