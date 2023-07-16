@@ -22,6 +22,13 @@ class DataManager(QThread):
     newFFTData = pyqtSignal(list, list, int)
 
     def __init__(self):
+
+        """
+        The __init__ function is called when the class is instantiated.
+
+        :param self: Represent the instance of the class
+        :return: Instance of the class
+        """
         super().__init__()
 
         self.startTime = time.time()
@@ -29,7 +36,6 @@ class DataManager(QThread):
         self.continueFlag = True
 
         self.functions = dict()
-        self.functions["Example 1"] = ["+", lambda t: math.sin(5 * t)]
 
         self.dataList = [[], []]
 
@@ -38,11 +44,29 @@ class DataManager(QThread):
         self.timeList = []
 
     def startGatherData(self):
+
+        """
+        The startGatherData function is a thread that runs in the background and continuously gathers data.
+        It does this by calling gatherData() every 1/SAMPLE_RATE seconds, where SAMPLE_RATE is defined above.
+        The while loop continues to run until continueFlag becomes False.
+
+        :param self: Access the attributes and methods of the class in python
+        :return: Nothing
+        """
         while (self.continueFlag):
-            time.sleep(1.0 / self._SAMPLE_RATE)
-            self.gatherData()
+                time.sleep(1.0 / self._SAMPLE_RATE)
+                self.gatherData()
 
     def gatherData(self):
+
+        """
+        The gatherData function is the main function of this class. It gathers data from the functions
+        that are passed to it, and then emits signals with that data. The first signal is a time domain
+        signal, which contains the raw values of each sample in a list called self.dataList[0].
+
+        :param self: Access the class attributes
+        :return: None - emits new data signal
+        """
         now = time.time()
         curVal = 1
         for fn in self.functions.values():
@@ -68,11 +92,31 @@ class DataManager(QThread):
         self.newTimeData.emit(self.dataList[0], self.timeList, self._SAMPLE_RATE)
 
     def addSignal(self, data):
+        """
+        The addSignal function takes a dictionary as an argument. The dictionary must contain the following keys:
+        name - A string that will be used to identify the signal.
+        operator - A string representing one of the four basic arithmetic operators (+, -, *, /). This is how this signal will interact with others.
+        alpha - A float or integer value that scales this function's output by some factor (e.g., 2*sin(x) would have an alpha of 2).
+        beta  - A float or integer value that scales this function's input by some factor (e.g., sin(2x) would have a beta of 2).
+        gamma - A float or integer value that changes the phase of this function's input by some factor (e.g., sin(x+2) would have a gamma of 2).
+
+        :param self: Access the functions dictionary
+        :param data: Store the information about the signal
+        :return: A list of the operator, and a lambda function that is used to calculate the value
+        """
         self.functions[data["name"]] = [data["operator"],
-                                        lambda t: eval(str(data["alpha"]) + "*" + self._FUNCTION_MAP[data["function"]] \
-                                                       + "(" + str(data["beta"]) + "*" + str(t) + "+" + data["gamma"] + ")")]
+                                            lambda t: eval(str(data["alpha"]) + "*" + self._FUNCTION_MAP[data["function"]] \
+                                                           + "(" + str(data["beta"]) + "*" + str(t) + "+" + str(data["gamma"]) + ")")]
 
     def removeSignal(self, signalName):
+
+        """
+        The removeSignal function removes a signal from the list of signals that are being monitored.
+
+        :param self: Represent the instance of the class
+        :param signalName: Identify the signal to be removed
+        :return: None
+        """
         for fnName in self.functions.keys():
-            if fnName == signalName:
-                self.functions.pop(fnName)
+                if fnName == signalName:
+                    self.functions.pop(fnName)

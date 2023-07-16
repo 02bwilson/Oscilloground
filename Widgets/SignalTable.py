@@ -35,7 +35,7 @@ class SignalTable(QWidget):
         header.setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)
         self.mainGridLayout.addWidget(self.tableView, 0, 0)
 
-        self.tableModel.appendRow([QStandardItem("Example 1"), QStandardItem("sin(5*t)")])
+        self.tableModel.appendRow([QStandardItem("Example_sin_10_t"), QStandardItem("1*sin(10*t+0)")])
 
         self.addSignalButton.setStyleSheet("border:none; text-align:center; color: green; font-size: 24pt;")
         self.addSignalButton.setText("+")

@@ -26,6 +26,14 @@ class MainWidget(QWidget):
         self.addSignalMenu = AddSignal()
         self.dataManager = DataManager()
 
+        self.dataManager.addSignal({"name": "Example_sin_10_t",
+                                    "operator": "+",
+                                    "function": "sin",
+                                    "alpha": 1,
+                                    "beta": 10,
+                                    "gamma": 0})
+
+
         self.addSignalMenu.addSignalSignal.connect(self.dataManager.addSignal)
         self.addSignalMenu.addSignalSignal.connect(self.signalTable.signalAdded)
 
