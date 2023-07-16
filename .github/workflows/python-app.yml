@@ -29,4 +29,4 @@ jobs:
         pip install pyinstaller pyqt6 pyqtdarktheme scipy
     - name: Create Executable
       run: |
-    pyinstaller --one-file --no-console ./Oscilloground.py
+        pyinstaller --one-file --no-console ./Oscilloground.py
