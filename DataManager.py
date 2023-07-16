@@ -1,5 +1,4 @@
 import math
-import threading
 import time
 
 import scipy
@@ -8,6 +7,8 @@ from PyQt6.QtCore import pyqtSignal, QThread
 
 
 class DataManager(QThread):
+    _IIR_ALPHA = .999
+
     _SAMPLE_RATE = 64
 
     _FUNCTION_MAP = {
@@ -31,6 +32,9 @@ class DataManager(QThread):
         self.functions["Example 1"] = ["+", lambda t: math.sin(5 * t)]
 
         self.dataList = [[], []]
+
+        self.iirData = []
+
         self.timeList = []
 
     def startGatherData(self):
@@ -43,7 +47,7 @@ class DataManager(QThread):
         curVal = 1
         for fn in self.functions.values():
             curVal = eval(str(curVal) + fn[0] + str(fn[1](now)))
-        if len(self.dataList[0]) == 8 * self._SAMPLE_RATE:
+        if len(self.dataList[0]) == 4 * self._SAMPLE_RATE:
             self.dataList[0].pop(0)
             self.timeList.pop(0)
         self.dataList[0] += [curVal]
@@ -51,7 +55,13 @@ class DataManager(QThread):
 
         self.dataList[1] = scipy.fft.fftshift(scipy.fft.fft(self.dataList[0]))
         self.dataList[1] = [math.log10((v.real * v.real) + (v.imag * v.imag)) if (v.real != 0 and v.imag != 0) else 1 for v in self.dataList[1]]
-        self.newFFTData.emit(self.dataList[1],
+        if len(self.iirData) <= 4 * self._SAMPLE_RATE:
+            self.iirData = self.dataList[1]
+        else:
+            for i in range(len(self.iirData)):
+                self.iirData[i] = (self.iirData[i] * self._IIR_ALPHA) + (self.dataList[1][i] * (1 - self._IIR_ALPHA))
+
+        self.newFFTData.emit(self.iirData,
                              [(i - (len(self.dataList[1]) / 2)) for i in range(len(self.dataList[1]))],
                              self._SAMPLE_RATE)
 
