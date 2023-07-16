@@ -16,6 +16,9 @@ class DataManager(QThread):
         "cos": "math.cos",
         "square": "scipy.signal.square",
         "sawtooth": "scipy.signal.sawtooth",
+        "triangle": "scipy.signal.triang",
+        "constant": "1+"
+
     }
 
     newTimeData = pyqtSignal(list, list, int)
