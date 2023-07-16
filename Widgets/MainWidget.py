@@ -29,6 +29,8 @@ class MainWidget(QWidget):
         self.addSignalMenu.addSignalSignal.connect(self.dataManager.addSignal)
         self.addSignalMenu.addSignalSignal.connect(self.signalTable.signalAdded)
 
+        self.signalTable.signalDeleted.connect(self.dataManager.removeSignal)
+
         self.dataThread = QThread()
         self.dataManager.moveToThread(self.dataThread)
         self.dataThread.started.connect(self.dataManager.startGatherData)
