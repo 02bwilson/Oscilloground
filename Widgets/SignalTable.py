@@ -1,9 +1,12 @@
+from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QStandardItemModel, QStandardItem, QIcon, QPixmap
 from PyQt6.QtWidgets import QWidget, QGridLayout, QTableView, QHeaderView, QAbstractItemView, QPushButton
 
 
 class SignalTable(QWidget):
-    _PLUS_ICON_PATH = "../Content/plus.png"
+
+
+    signalDeleted = pyqtSignal(str)
 
     def __init__(self):
         super().__init__()
@@ -32,7 +35,7 @@ class SignalTable(QWidget):
         header.setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)
         self.mainGridLayout.addWidget(self.tableView, 0, 0)
 
-        self.tableModel.appendRow([QStandardItem("Example 1"), QStandardItem("sin(10t)")])
+        self.tableModel.appendRow([QStandardItem("Example 1"), QStandardItem("sin(5*t)")])
 
         self.addSignalButton.setStyleSheet("border:none; text-align:center; color: green; font-size: 24pt;")
         self.addSignalButton.setText("+")
@@ -40,4 +43,14 @@ class SignalTable(QWidget):
 
     def signalAdded(self, data):
         fnStr = str(data["alpha"]) + "*" + data["function"] + "(" + data["beta"] + "t" + "+" + data["gamma"] + ")"
-        self.tableModel.appendRow([QStandardItem(data["name"]), QStandardItem(fnStr)])
+        nameItem = QStandardItem(data["name"])
+        self.tableModel.appendRow([nameItem, QStandardItem(fnStr)])
+
+    def keyPressEvent(self, a0):
+        super().keyPressEvent(a0)
+
+        if a0.key() == Qt.Key.Key_Delete:
+            selectedSignalsIndex = self.tableView.selectionModel().currentIndex().row()
+            signalName = self.tableModel.item(selectedSignalsIndex, 0).text()
+            self.tableModel.removeRow(selectedSignalsIndex)
+            self.signalDeleted.emit(signalName)
