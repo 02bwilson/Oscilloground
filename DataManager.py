@@ -7,6 +7,8 @@ from PyQt6.QtCore import pyqtSignal, QThread
 
 
 class DataManager(QThread):
+    _TIME_SCALE_FACTOR = 1.0
+
     _IIR_ALPHA = .999
 
     _SAMPLE_RATE = 64
@@ -73,7 +75,7 @@ class DataManager(QThread):
         now = time.time()
         curVal = 1
         for fn in self.functions.values():
-            curVal = eval(str(curVal) + fn[0] + str(fn[1](now)))
+            curVal = eval(str(curVal) + fn[0] + str(fn[1](now * self._TIME_SCALE_FACTOR)))
         if len(self.dataList[0]) == 4 * self._SAMPLE_RATE:
             self.dataList[0].pop(0)
             self.timeList.pop(0)
