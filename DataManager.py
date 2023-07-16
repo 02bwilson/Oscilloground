@@ -4,11 +4,18 @@ import time
 
 import scipy
 
-from PyQt6.QtCore import pyqtSignal, QTimer, QThread
+from PyQt6.QtCore import pyqtSignal, QThread
 
 
 class DataManager(QThread):
     _SAMPLE_RATE = 64
+
+    _FUNCTION_MAP = {
+        "sin": "math.sin",
+        "cos": "math.cos",
+        "square": "scipy.signal.square",
+        "sawtooth": "scipy.signal.sawtooth",
+    }
 
     newTimeData = pyqtSignal(list, list, int)
     newFFTData = pyqtSignal(list, list, int)
@@ -21,7 +28,7 @@ class DataManager(QThread):
         self.continueFlag = True
 
         self.functions = dict()
-        self.functions["Example 1"] = ["*", lambda t: math.sin(10 * t)]
+        self.functions["Example 1"] = ["+", lambda t: math.sin(5 * t)]
 
         self.dataList = [[], []]
         self.timeList = []
@@ -42,16 +49,20 @@ class DataManager(QThread):
         self.dataList[0] += [curVal]
         self.timeList += [now - self.startTime]
 
-        if len(self.dataList[0]) >= 2 * self._SAMPLE_RATE:
-            self.dataList[1] = scipy.fft.fftshift(scipy.fft.fft(self.dataList[0]))
-            self.dataList[1] = [math.log10((v.real * v.real) + (v.imag * v.imag)) for v in self.dataList[1]]
-            self.newFFTData.emit(self.dataList[1],
-                                 [(i - (self._SAMPLE_RATE / 2)) for i in range(len(self.dataList[1]))],
-                                 self._SAMPLE_RATE)
+        self.dataList[1] = scipy.fft.fftshift(scipy.fft.fft(self.dataList[0]))
+        self.dataList[1] = [math.log10((v.real * v.real) + (v.imag * v.imag)) if (v.real != 0 and v.imag != 0) else 1 for v in self.dataList[1]]
+        self.newFFTData.emit(self.dataList[1],
+                             [(i - (len(self.dataList[1]) / 2)) for i in range(len(self.dataList[1]))],
+                             self._SAMPLE_RATE)
 
         self.newTimeData.emit(self.dataList[0], self.timeList, self._SAMPLE_RATE)
 
     def addSignal(self, data):
         self.functions[data["name"]] = [data["operator"],
-                                        lambda t: eval(str(data["alpha"]) + "*" + "scipy." + data["function"] \
+                                        lambda t: eval(str(data["alpha"]) + "*" + self._FUNCTION_MAP[data["function"]] \
                                                        + "(" + str(data["beta"]) + "*" + str(t) + "+" + data["gamma"] + ")")]
+
+    def removeSignal(self, signalName):
+        for fnName in self.functions.keys():
+            if fnName == signalName:
+                self.functions.pop(fnName)
