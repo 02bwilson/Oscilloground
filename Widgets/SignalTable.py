@@ -4,8 +4,6 @@ from PyQt6.QtWidgets import QWidget, QGridLayout, QTableView, QHeaderView, QAbst
 
 
 class SignalTable(QWidget):
-
-
     signalDeleted = pyqtSignal(str)
 
     def __init__(self):
@@ -15,14 +13,29 @@ class SignalTable(QWidget):
         self.mainGridLayout = QGridLayout()
         self.tableView = QTableView()
         self.tableModel = QStandardItemModel()
-        self.addSignalButton = QPushButton()
+
+        self.setStyleSheet("""
+        QHeaderView::section {
+            background-color: black;
+            color: white;
+            font: 14px;
+        }
+        
+        QTableView::item {
+                    color: white;
+                    gridline-color: black;
+                    border-color: rgb(242, 128, 133);
+                    border: 1px solid white;
+                    font: 10px;
+        }
+        """)
 
         self.setupTable()
 
         self.setLayout(self.mainGridLayout)
 
     def setupTable(self):
-        self.tableModel.setHorizontalHeaderLabels(['NAME', 'FUNCTION'])
+        self.tableModel.setHorizontalHeaderLabels(['NAME', 'OPERATOR', 'FUNCTION'])
 
         self.tableView.setStyleSheet("background-color: transparent; border:none;")
         self.tableView.setModel(self.tableModel)
@@ -31,20 +44,23 @@ class SignalTable(QWidget):
         self.tableView.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
 
         header = self.tableView.horizontalHeader()
-        header.setSectionResizeMode(0, QHeaderView.ResizeMode.ResizeToContents)
+        header.setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
         header.setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)
+        header.setSectionResizeMode(2, QHeaderView.ResizeMode.Stretch)
+
         self.mainGridLayout.addWidget(self.tableView, 0, 0)
 
-        self.tableModel.appendRow([QStandardItem("Example_sin_10_t"), QStandardItem("1*sin(10*t+0)")])
-
-        self.addSignalButton.setStyleSheet("border:none; text-align:center; color: green; font-size: 24pt;")
-        self.addSignalButton.setText("+")
-        self.mainGridLayout.addWidget(self.addSignalButton, 1, 0)
-
     def signalAdded(self, data):
-        fnStr = str(data["alpha"]) + "*" + data["function"] + "(" + data["beta"] + "t" + "+" + data["gamma"] + ")"
+        fnStr = str(data["alpha"]) + "*" + data["function"] + "(" + str(data["beta"]) + "t" + "+" + str(data["gamma"]) + ")"
         nameItem = QStandardItem(data["name"])
-        self.tableModel.appendRow([nameItem, QStandardItem(fnStr)])
+        nameItem.setTextAlignment(Qt.AlignmentFlag .AlignCenter)
+        operatorItem = QStandardItem(data["operator"])
+        operatorItem.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
+        functionItem = QStandardItem(fnStr)
+        functionItem.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
+
+        self.tableModel.appendRow([nameItem, operatorItem, functionItem])
+
 
     def keyPressEvent(self, a0):
         super().keyPressEvent(a0)
