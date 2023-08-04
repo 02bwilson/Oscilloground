@@ -1,3 +1,5 @@
+import threading
+
 import pyqtgraph as pg
 from PyQt6.QtWidgets import QGridLayout, QWidget
 
@@ -18,5 +20,10 @@ class AbstractPlot(QWidget):
 
         self.setLayout(self.mainGridLayout)
 
+    def requestPlot(self, xData, yData):
+        plotThrd = threading.Thread(target=self.plot, args=(xData, yData))
+        plotThrd.start()
+
     def plot(self, xData, yData):
         self.plotLine.setData(yData, xData)
+
