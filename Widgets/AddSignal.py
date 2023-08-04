@@ -26,6 +26,8 @@ class AddSignal(QDialog):
         self.betaLineEdit = QLineEdit()
         self.gammaLineEdit = QLineEdit()
 
+        self.signalNameList = list()
+
         self.functionComboBox = QComboBox()
         self.functionComboBox.addItems(["sin", "cos", "square", "sawtooth", "constant"])
 
@@ -65,7 +67,11 @@ class AddSignal(QDialog):
         self.mainGridLayout.addWidget(self.addButton, 99, 0, 1, 2)
         self.setLayout(self.mainGridLayout)
 
+    def removeSignal(self, signalName):
+        if signalName in self.signalNameList:
+            self.signalNameList.remove(signalName)
     def addSignal(self):
+
         data = {"name": self.nameLineEdit.text(),
                 "function": self.functionComboBox.currentText(),
                 "operator": self.operatorComboBox.currentText(),
@@ -73,6 +79,14 @@ class AddSignal(QDialog):
                 "beta": self.betaLineEdit.text(),
                 "gamma": self.gammaLineEdit.text()}
 
+        if data["name"] in  self.signalNameList:
+            self.nameLineEdit.setStyleSheet("border: 1px solid red")
+
+            return
+
+
         self.addSignalSignal.emit(data)
+
+        self.signalNameList.append(data["name"])
 
         self.close()
