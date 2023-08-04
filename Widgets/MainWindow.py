@@ -3,8 +3,9 @@ from PyQt6.QtWidgets import QMainWindow
 from Widgets.MainWidget import MainWidget
 
 class MainWindow(QMainWindow):
-
-    _VERSION = "1.0"
+    _MAIN_VERSION = 0x1
+    _SUB_VERSION = 0x1
+    _VERSION = str(_MAIN_VERSION) + "." + str(_SUB_VERSION)
     def __init__(self):
         super().__init__()
 
