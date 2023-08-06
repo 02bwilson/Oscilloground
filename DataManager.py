@@ -7,15 +7,16 @@ import scipy
 from PyQt6.QtCore import pyqtSignal, QObject
 
 
-
 class DataManager(QObject):
-    _TIME_SCALE_FACTOR = 1.0
+    _WINDOW_SIZE = 2
+
+    _TIME_SCALE_FACTOR = 1.5
 
     _IIR_ALPHA = .999
 
     _SAMPLE_RATE = 32
 
-    _MOD_VAL = 12.56637061
+    _MOD_VAL = 9999
 
     _FUNCTION_MAP = {
         "sin": "math.sin",
@@ -63,6 +64,10 @@ class DataManager(QObject):
 
     def setMod(self, mod):
         self._MOD_VAL = mod
+
+    def setWindowSize(self, windowSize):
+        self._WINDOW_SIZE = windowSize
+
     def startDataGather(self):
         while (self.continueFlag):
             time.sleep(float(1 / self._SAMPLE_RATE))
@@ -83,24 +88,24 @@ class DataManager(QObject):
         now = time.time() - self.startTime
         curVal = 1
         for fn in self.functions.values():
-            curVal = eval(str(curVal) + fn[0] + str(fn[1]((now % self._MOD_VAL) * (self._TIME_SCALE_FACTOR))))
-        if len(self.dataList[0]) == self._SAMPLE_RATE:
+            curVal = eval(str(curVal) + fn[0] + str(fn[1]((now % self._MOD_VAL) * self._TIME_SCALE_FACTOR)))
+        if len(self.dataList[0]) == self._WINDOW_SIZE * self._SAMPLE_RATE:
             self.dataList[0].pop(0)
             self.timeList.pop(0)
         self.dataList[0] += [curVal]
         self.timeList += [now]
 
         self.dataList[1] = scipy.fft.fftshift(scipy.fft.fft(self.dataList[0]))
-        self.dataList[1] = [10 * math.log10((v.real * v.real) + (v.imag * v.imag)) if (v.real != 0 and v.imag != 0) else 1
-                            for v in self.dataList[1]]
-        if len(self.iirData) <= self._SAMPLE_RATE:
+        self.dataList[1] = [
+            10 * math.log10((v.real * v.real) + (v.imag * v.imag)) if (v.real != 0 and v.imag != 0) else 1
+            for v in self.dataList[1]]
+        if len(self.iirData) <= self._WINDOW_SIZE * self._SAMPLE_RATE:
             self.iirData = self.dataList[1]
         else:
             for i in range(len(self.iirData)):
                 self.iirData[i] = (self.iirData[i] * self._IIR_ALPHA) + (self.dataList[1][i] * (1 - self._IIR_ALPHA))
-
         self.newFFTData.emit(self.iirData[1:],
-                             [(i - (self._SAMPLE_RATE / 2)) for i in range(len(self.dataList[1]))][1:],
+                             [(i - (self._SAMPLE_RATE * self._WINDOW_SIZE / 2)) for i in range(len(self.dataList[1]))][1:],
                              self._SAMPLE_RATE)
 
         self.newTimeData.emit(self.dataList[0], self.timeList, self._SAMPLE_RATE)
@@ -126,7 +131,6 @@ class DataManager(QObject):
                                             data["gamma"]) + ")")]
 
     def removeSignal(self, signalName):
-
         """
         The removeSignal function removes a signal from the list of signals that are being monitored.
 
