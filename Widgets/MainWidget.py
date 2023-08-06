@@ -43,6 +43,7 @@ class MainWidget(QWidget):
 
         self.settings.settingsDisplay.speedChanged.connect(self.dataManager.setSpeed)
         self.settings.settingsDisplay.modChanged.connect(self.dataManager.setMod)
+        self.settings.settingsDisplay.windowSizeChanged.connect(self.dataManager.setWindowSize)
 
         self.signalTable.signalDeleted.connect(self.dataManager.removeSignal)
         self.signalTable.signalDeleted.connect(self.addSignalMenu.removeSignal)
@@ -83,11 +84,13 @@ class MainWidget(QWidget):
 
     def removePressed(self):
         curRow = self.signalTable.tableView.selectionModel().currentIndex().row()
-        print(curRow)
         signalName = self.signalTable.tableModel.item(curRow, 0).text()
 
         self.dataManager.removeSignal(signalName)
-        self.signalTable.tableModel.clearItemData(curRow)
+        self.signalTable.tableModel.removeRow(curRow)
+
+
+
     def close(self):
         super().close()
 
