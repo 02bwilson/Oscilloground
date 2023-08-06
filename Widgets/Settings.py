@@ -6,6 +6,7 @@ from PyQt6.QtWidgets import QWidget, QGridLayout, QPushButton, QDialog, QFormLay
 class SettingsDisplay(QDialog):
     speedChanged = Signal(float)
     modChanged = Signal(float)
+    windowSizeChanged = Signal(float)
 
     def __init__(self):
         super().__init__()
@@ -28,15 +29,24 @@ class SettingsDisplay(QDialog):
         self.speedSlider.setMaximum(750)
         self.speedSlider.setMinimum(-74)
         self.speedSlider.valueChanged.connect(self.speedValChanged)
-
         self.formLayout.addRow(self.speedLabel, self.speedSlider)
 
-        self.modLabel = QLabel("Time Modulus 12.566")
+        self.windowSizeLabel = QLabel("Window Size x1.0")
+        self.windowSizeSlider = QSlider(Qt.Orientation.Horizontal)
+        self.windowSizeSlider.setMinimum(-74)
+        self.windowSizeSlider.setMaximum(750)
+        self.windowSizeSlider.valueChanged.connect(self.windowSizeValueChanged)
+        self.formLayout.addRow(self.windowSizeLabel, self.windowSizeSlider)
+
+        self.modLabel = QLabel("Time Modulus 9999")
         self.modEdit = QLineEdit()
         self.modEdit.setValidator(QDoubleValidator())
         self.formLayout.addRow(self.modLabel, self.modEdit)
         self.modEdit.returnPressed.connect(self.modValueChanged)
 
+
+    def windowSizeValueChanged(self):
+        self.windowSizeChanged.emit(round(1.0 + ((-25 + (self.speedSlider.value())) / 100), 3))
     def modValueChanged(self):
         self.modChanged.emit(float(self.modEdit.text()))
     def speedValChanged(self):
