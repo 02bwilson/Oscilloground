@@ -50,9 +50,9 @@ class SettingsDisplay(QDialog):
 
         self.iirAlphaLabel = QLabel("IIR α: .990")
         self.iirAlphaSlider = QSlider(Qt.Orientation.Horizontal)
-        self.iirAlphaSlider.setMinimum(100)
-        self.iirAlphaSlider.setMaximum(999)
-        self.iirAlphaSlider.setValue(990)
+        self.iirAlphaSlider.setMinimum(10)
+        self.iirAlphaSlider.setMaximum(99)
+        self.iirAlphaSlider.setValue(90)
         self.formLayout.addRow(self.iirAlphaLabel, self.iirAlphaSlider)
         self.iirAlphaSlider.valueChanged.connect(self.iirAlphaValueChanged)
 
@@ -78,7 +78,7 @@ class SettingsDisplay(QDialog):
             self.requestLoad.emit(file_name)
 
     def iirAlphaValueChanged(self):
-        val = float(self.iirAlphaSlider.value()) / 1000.0
+        val = float(self.iirAlphaSlider.value()) / 100.0
         self.iirAlphaLabel.setText("IIR Alpha: %s" % val)
         self.iirAlphaChanged.emit(val)
     def windowSizeValueChanged(self):
