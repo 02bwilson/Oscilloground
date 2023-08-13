@@ -24,7 +24,7 @@ Make sure you have the following software installed before running Oscilloground
 
 Clone this repository and install the required dependencies:
 
-```git clone https://github.com/yourusername/Oscilloground.git```
+```git clone https://github.com/02bwilson/Oscilloground.git```
 
 ```cd Oscilloground```
 
@@ -34,7 +34,7 @@ Clone this repository and install the required dependencies:
 
 To launch Oscilloground, run the following command:
 
-```python oscilloground.py```
+```python Oscilloground.py```
 
 # How to Use
 
