@@ -70,6 +70,7 @@ class DataManager(QObject):
 
     def setIIRAlpha(self, alpha):
         self._IIR_ALPHA = alpha
+
     def setSpeed(self, speed):
         self._TIME_SCALE_FACTOR = speed
 
@@ -123,7 +124,7 @@ class DataManager(QObject):
         # If the window size has been decreased we need to resize the time data
         elif len(self.dataDict['time']) > self._WINDOW_SIZE * self._SAMPLE_RATE:
             spliceSpot = (len(self.dataDict['time']) - (self._WINDOW_SIZE * self._SAMPLE_RATE))
-            self.dataDict['time'] = self.dataDict['time'][int(spliceSpot)+1:]
+            self.dataDict['time'] = self.dataDict['time'][int(spliceSpot) + 1:]
         # Add the current value
         self.dataDict['time'] += [curVal]
         self.timeList += [now]
@@ -172,10 +173,11 @@ class DataManager(QObject):
         # Operator: the operator that will be applied to the curValue
         # Lambda t: A lambda expression representing the signal
         self.functions[data["name"]] = [data["operator"],
-                                        lambda t: eval(str(data["alpha"]) + "*" + self._FUNCTION_MAP[data["function"]] \
+                                        lambda t: eval(str(data["alpha"]) + "*" + self._FUNCTION_MAP[data["function"]]
                                                        + "(" + str(data["beta"]) + "*" + str(t) + "+" + str(
                                             data["gamma"]) + ")"), [data["alpha"], data["beta"], data["gamma"],
-                                            data["function"], self._FUNCTION_MAP[data["function"]]]]
+                                                                    data["function"],
+                                                                    self._FUNCTION_MAP[data["function"]]]]
 
     def removeSignal(self, signalName):
         """
