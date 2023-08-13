@@ -1,12 +1,12 @@
 import qdarktheme
-from PyQt6 import QtGui
-from PyQt6.QtCore import QThread, Qt, QModelIndex
+from PyQt6.QtCore import Qt
 
 from PyQt6.QtWidgets import QWidget, QGridLayout, QSizePolicy, QPushButton
 
-from DataManager import DataManager
+from Managers.DataManager import DataManager
 from Widgets.AddSignal import AddSignal
 from Widgets.FFTPlot import FFTPlot
+from Managers.SaveManager import SaveManager
 from Widgets.Settings import Settings
 from Widgets.SignalTable import SignalTable
 from Widgets.TimePlot import TimePlot
@@ -28,7 +28,9 @@ class MainWidget(QWidget):
         self.addSignalMenu = AddSignal()
         self.dataManager = DataManager()
         self.settings = Settings()
+        self.saveManager = SaveManager()
 
+        # Add an example signal
         signalData = {"name": "Example_sin_1_t",
                                     "operator": "*",
                                     "function": "sin",
@@ -44,6 +46,9 @@ class MainWidget(QWidget):
         self.settings.settingsDisplay.speedChanged.connect(self.dataManager.setSpeed)
         self.settings.settingsDisplay.modChanged.connect(self.dataManager.setMod)
         self.settings.settingsDisplay.windowSizeChanged.connect(self.dataManager.setWindowSize)
+        self.settings.settingsDisplay.iirAlphaChanged.connect(self.dataManager.setIIRAlpha)
+        self.settings.settingsDisplay.requestSave.connect(self.saveRequested)
+        self.settings.settingsDisplay.requestLoad.connect(self.loadRequested)
 
         self.signalTable.signalDeleted.connect(self.dataManager.removeSignal)
         self.signalTable.signalDeleted.connect(self.addSignalMenu.removeSignal)
@@ -82,16 +87,25 @@ class MainWidget(QWidget):
 
         self.setLayout(self.mainGridLayout)
 
-    def removePressed(self):
-        curRow = self.signalTable.tableView.selectionModel().currentIndex().row()
-        signalName = self.signalTable.tableModel.item(curRow, 0).text()
+    def loadRequested(self, path):
+        dataList = self.saveManager.load(path)
+        for item in dataList:
+            self.addSignalMenu.addSignal(item)
+    def saveRequested(self, path):
+        self.saveManager.save(path, self.dataManager.functions)
 
-        self.dataManager.removeSignal(signalName)
-        self.signalTable.tableModel.removeRow(curRow)
+    def removePressed(self):
+        selectedSignalsIndex = self.signalTable.tableView.selectionModel().currentIndex().row()
+        signalName = self.signalTable.tableModel.item(selectedSignalsIndex, 0).text()
+
+        self.signalTable.tableModel.removeRow(selectedSignalsIndex)
+        self.signalTable.signalDeleted.emit(signalName)
 
 
 
     def close(self):
-        super().close()
+        self.settings.close()
 
         self.dataManager.continueFlag = False
+
+        super().close()
