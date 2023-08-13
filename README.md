@@ -4,7 +4,7 @@
 
  Oscilloground is a Python program that provides a user-friendly interface to combine different signals and visualize them in the time and frequency domains. It utilizes PyQt6 for the graphical user interface and SciPy for signals. With Oscilloground, you can add custom signals and use various operators to create complex signal combinations for analysis and visualization. </div>
 
-<img src="https://brycew.dev/Oscilloground/ss.png">
+<img src="https://i.imgur.com/NSu56j8.png">
 
 # Features
 
