@@ -22,6 +22,7 @@ class AbstractPlot(QWidget):
 
     def requestPlot(self, xData, yData):
         plotThrd = threading.Thread(target=self.plot, args=(xData, yData))
+        plotThrd.daemon = True
         plotThrd.start()
 
     def plot(self, xData, yData):
