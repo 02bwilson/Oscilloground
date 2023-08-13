@@ -35,7 +35,7 @@ class SignalTable(QWidget):
         self.setLayout(self.mainGridLayout)
 
     def setupTable(self):
-        self.tableModel.setHorizontalHeaderLabels(['NAME', 'OPERATOR', 'FUNCTION'])
+        self.tableModel.setHorizontalHeaderLabels(['NAME', 'OP', 'FUNC'])
 
         self.tableView.setStyleSheet("background-color: transparent; border:none;")
         self.tableView.setModel(self.tableModel)
@@ -44,7 +44,7 @@ class SignalTable(QWidget):
         self.tableView.setEditTriggers(QAbstractItemView.EditTrigger.NoEditTriggers)
 
         header = self.tableView.horizontalHeader()
-        header.setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
+        header.setSectionResizeMode(0, QHeaderView.ResizeMode.Fixed)
         header.setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)
         header.setSectionResizeMode(2, QHeaderView.ResizeMode.Stretch)
 
