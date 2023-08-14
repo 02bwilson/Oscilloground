@@ -19,6 +19,7 @@ Make sure you have the following software installed before running Oscilloground
     Python (version 3.6 or higher)
     PyQt6
     SciPy
+    numpy
 
 # Installation
 
