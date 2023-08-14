@@ -1,6 +1,8 @@
 <div style="text-align: center"> <h1> Oscilloground </h1>
 
-[![Oscilloground](https://github.com/02bwilson/Oscilloground/actions/workflows/python-app.yml/badge.svg)](https://github.com/02bwilson/Oscilloground/actions/workflows/python-app.yml)
+[![Oscilloground](https://github.com/02bwilson/Oscilloground/actions/workflows/python-app.yml/badge.svg)](https://github.com/02bwilson/Oscilloground/actions/workflows/python-app.yml) [![CodeFactor](https://www.codefactor.io/repository/github/02bwilson/oscilloground/badge)](https://www.codefactor.io/repository/github/02bwilson/oscilloground) ![Current Tag](https://img.shields.io/github/v/tag/02bwilson/Oscilloground) 
+
+
 
  Oscilloground is a Python program that provides a user-friendly interface to combine different signals and visualize them in the time and frequency domains. It utilizes PyQt6 for the graphical user interface and SciPy for signals. With Oscilloground, you can add custom signals and use various operators to create complex signal combinations for analysis and visualization. </div>
 
