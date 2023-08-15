@@ -56,16 +56,15 @@ class SettingsDisplay(QDialog):
         self.formLayout.addRow(self.iirAlphaLabel, self.iirAlphaSlider)
         self.iirAlphaSlider.valueChanged.connect(self.iirAlphaValueChanged)
 
-        self.saveSignalsButton = QPushButton("Save")
+        self.saveSignalsButton = QPushButton("Save Signals")
         self.saveSignalsButton.pressed.connect(self.saveButtonPressed)
         self.saveSignalsFileDialog = QFileDialog()
-        self.mainGridLayout.addWidget(self.saveSignalsButton, 1, 0)
+        self.mainGridLayout.addWidget(self.saveSignalsButton, 1, 0, Qt.AlignmentFlag.AlignTop)
 
-        self.loadSignalsButton = QPushButton("Load")
+        self.loadSignalsButton = QPushButton("Load Signals")
         self.loadSignalsButton.pressed.connect(self.loadButtonPressed)
         self.loadSignalsFileDialog = QFileDialog()
-        self.mainGridLayout.addWidget(self.loadSignalsButton, 1, 1)
-
+        self.mainGridLayout.addWidget(self.loadSignalsButton, 1, 1, Qt.AlignmentFlag.AlignTop)
 
     def saveButtonPressed(self):
         file_name, _ = QFileDialog.getSaveFileName(self, "Save File", "untitled.ogc", "Oscilloground Config(*.ogc)")
@@ -81,12 +80,15 @@ class SettingsDisplay(QDialog):
         val = float(self.iirAlphaSlider.value()) / 100.0
         self.iirAlphaLabel.setText("IIR Alpha: %s" % val)
         self.iirAlphaChanged.emit(val)
+
     def windowSizeValueChanged(self):
         self.windowSizeLabel.setText("Window Size: " + str(self.windowSizeSlider.value()))
         self.windowSizeChanged.emit(self.windowSizeSlider.value())
+
     def modValueChanged(self):
         self.modLabel.setText(str(self.modEdit.text()))
         self.modChanged.emit(float(self.modEdit.text()))
+
     def speedValChanged(self):
         if self.speedSlider.value() >= .95 and self.speedSlider.value() <= 1.05:
             self.speedSlider.setValue(1)
