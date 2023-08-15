@@ -30,6 +30,9 @@ class MainWidget(QWidget):
         self.settings = Settings()
         self.saveManager = SaveManager()
 
+        keys = self.dataManager._FUNCTION_MAP.keys()
+        self.addSignalMenu.addFunctions(keys)
+
         # Add an example signal
         signalData = {"name": "Example_sin_1_t",
                                     "operator": "*",
