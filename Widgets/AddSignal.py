@@ -29,7 +29,6 @@ class AddSignal(QDialog):
         self.signalNameList = list()
 
         self.functionComboBox = QComboBox()
-        self.functionComboBox.addItems(["sin", "cos", "square", "sawtooth", "constant", "random"])
 
         self.operatorComboBox = QComboBox()
         self.operatorComboBox.addItems(["+", "*", "-", "/"])
@@ -66,6 +65,9 @@ class AddSignal(QDialog):
 
         self.mainGridLayout.addWidget(self.addButton, 99, 0, 1, 2)
         self.setLayout(self.mainGridLayout)
+
+    def addFunctions(self, functions):
+        self.functionComboBox.addItems(functions)
 
     def removeSignal(self, signalName):
         if signalName in self.signalNameList:
