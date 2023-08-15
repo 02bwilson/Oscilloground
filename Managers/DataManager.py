@@ -4,6 +4,7 @@ import time
 import random
 
 import scipy
+import numpy
 
 from PyQt6.QtCore import pyqtSignal, QObject
 
@@ -20,13 +21,15 @@ class DataManager(QObject):
     _MOD_VAL = 9999
 
     _FUNCTION_MAP = {
-        "sin": "math.sin",
-        "cos": "math.cos",
-        "square": "scipy.signal.square",
+        "sin": "numpy.sin",
+        "sinc": "numpy.sinc",
+        "cos": "numpy.cos",
+        "tan": "numpy.tan",
         "sawtooth": "scipy.signal.sawtooth",
-        "triangle": "scipy.signal.triang",
+        "square": "scipy.signal.square",
         "constant": "1+",
-        "random": "random.random()+"
+        "random": "random.random()+",
+
     }
 
     newTimeData = pyqtSignal(list, list, int)
